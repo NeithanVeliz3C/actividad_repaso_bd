@@ -41,20 +41,21 @@ CREATE TABLE ciudad (
 
 -- Tabla: personas
 CREATE TABLE personas (
-    rut VARCHAR(13) NOT NULL UNIQUE, 
-    nombre_completo VARCHAR(100) NOT NULL CHECK (LENGTH(nombre_completo) >= 5), -- Nombre completo mínimo 5 letras
-	estado_persona VARCHAR(20) CHECK (estado_persona IN ('activo', 'inactivo', 'pendiente')), -- Check útil en nuevo campo
-    fecha_nac DATE CHECK (fecha_nac <= CURRENT_DATE), -- Fecha de nacimiento no puede estar en el futuro
+    rut VARCHAR(13) NOT NULL UNIQUE,
+    nombre_completo VARCHAR(100) NOT NULL CHECK (LENGTH(nombre_completo) >= 5),
+    estado_persona VARCHAR(20) CHECK (estado_persona IN ('activo', 'inactivo', 'pendiente')),
+    fecha_nac DATE,
     id_usuario INT,
     id_ciudad INT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_by INT,
     updated_by INT,
-    deleted BOOLEAN DEFAULT FALSE CHECK (deleted IN (0, 1)), -- Validación lógica de booleano
+    deleted BOOLEAN DEFAULT FALSE CHECK (deleted IN (0, 1)),
     CONSTRAINT fk_personas_usuarios FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     CONSTRAINT fk_personas_ciudad FOREIGN KEY (id_ciudad) REFERENCES ciudad(id_ciudad)
 );
+
 
 INSERT INTO tipo_usuarios (nombre_tipo, descripcion_tipo, created_by, updated_by) VALUES
 ('Administrador', 'Acceso completo al sistema', 1, 1),
@@ -95,3 +96,32 @@ INSERT INTO personas (
 ('99.999.999-9', 'Ana Farías',  '1995-01-28', 10, 4, 1, 1),
 ('10.101.010-0', 'Carlos Soto', '1991-08-08', 1, 1, 1, 1);
 
+SELECT username, email, id_tipo_usuario
+from  usuarios
+where id_tipo_usuario = 2;
+
+SELECT p.nombre_completo, p.fecha_nac, u.username
+FROM personas p JOIN usuarios u ON p.id_usuario = u.id_usuario
+WHERE p.fecha_nac > '1990-12-31';
+
+SELECT p.nombre_completo, u.email
+FROM personas p JOIN usuarios u ON p.id_usuario = u.id_usuario
+WHERE p.nombre_completo LIKE 'A%';
+
+SELECT username, email
+FROM usuarios
+WHERE email LIKE '%mail.com%';
+
+SELECT p.nombre_completo, u.username, c.nombre_ciudad
+FROM personas p JOIN usuarios u ON p.id_usuario = u.id_usuario
+JOIN ciudad c ON p.id_ciudad = c.id_ciudad
+WHERE p.id_ciudad != 2;
+
+SELECT username
+FROM usuarios
+WHERE LENGTH(username) > 7;
+
+SELECT u.username
+FROM personas p
+JOIN usuarios u ON p.id_usuario = u.id_usuario
+WHERE p.fecha_nac BETWEEN '1990-01-01' AND '1995-12-31';
