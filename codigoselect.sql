@@ -56,12 +56,13 @@ CREATE TABLE personas (
     CONSTRAINT fk_personas_ciudad FOREIGN KEY (id_ciudad) REFERENCES ciudad(id_ciudad)
 );
 
-
+-- Poblar tabla tipo_usuarios
 INSERT INTO tipo_usuarios (nombre_tipo, descripcion_tipo, created_by, updated_by) VALUES
 ('Administrador', 'Acceso completo al sistema', 1, 1),
 ('Cliente', 'Usuario con acceso restringido', 1, 1),
 ('Moderador', 'Puede revisar y aprobar contenido', 1, 1);
 
+-- Poblar tabla usuarios
 INSERT INTO usuarios (username, password, email, id_tipo_usuario, created_by, updated_by) VALUES
 ('admin01', 'pass1234', 'admin01@mail.com', 1, 1, 1),
 ('jvaldes', 'abc123', 'jvaldes@mail.com', 2, 1, 1),
@@ -74,7 +75,7 @@ INSERT INTO usuarios (username, password, email, id_tipo_usuario, created_by, up
 ('ltapia', 'lt123', 'ltapia@mail.com', 3, 1, 1),
 ('afarias', 'afpass', 'afarias@mail.com', 2, 1, 1);
 
-
+-- Poblar tabla ciudad
 INSERT INTO ciudad (nombre_ciudad, region, created_by, updated_by) VALUES
 ('Santiago', 'Región Metropolitana', 1, 1),
 ('Valparaíso', 'Región de Valparaíso', 1, 1),
@@ -82,6 +83,7 @@ INSERT INTO ciudad (nombre_ciudad, region, created_by, updated_by) VALUES
 ('La Serena', 'Región de Coquimbo', 1, 1),
 ('Puerto Montt', 'Región de Los Lagos', 1, 1);
 
+-- Poblar tabla personas (relacionadas con usuarios y ciudades
 INSERT INTO personas (
     rut, nombre_completo, fecha_nac, id_usuario, id_ciudad, created_by, updated_by
 ) VALUES
@@ -95,33 +97,3 @@ INSERT INTO personas (
 ('88.888.888-8', 'Lorena Tapia',  '2000-10-10', 9, 3, 1, 1),
 ('99.999.999-9', 'Ana Farías',  '1995-01-28', 10, 4, 1, 1),
 ('10.101.010-0', 'Carlos Soto', '1991-08-08', 1, 1, 1, 1);
-
-SELECT username, email, id_tipo_usuario
-from  usuarios
-where id_tipo_usuario = 2;
-
-SELECT p.nombre_completo, p.fecha_nac, u.username
-FROM personas p JOIN usuarios u ON p.id_usuario = u.id_usuario
-WHERE p.fecha_nac > '1990-12-31';
-
-SELECT p.nombre_completo, u.email
-FROM personas p JOIN usuarios u ON p.id_usuario = u.id_usuario
-WHERE p.nombre_completo LIKE 'A%';
-
-SELECT username, email
-FROM usuarios
-WHERE email LIKE '%mail.com%';
-
-SELECT p.nombre_completo, u.username, c.nombre_ciudad
-FROM personas p JOIN usuarios u ON p.id_usuario = u.id_usuario
-JOIN ciudad c ON p.id_ciudad = c.id_ciudad
-WHERE p.id_ciudad != 2;
-
-SELECT username
-FROM usuarios
-WHERE LENGTH(username) > 7;
-
-SELECT u.username
-FROM personas p
-JOIN usuarios u ON p.id_usuario = u.id_usuario
-WHERE p.fecha_nac BETWEEN '1990-01-01' AND '1995-12-31';
